@@ -12,25 +12,11 @@
 /* ─── RESET & BASE ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
+body { transition: background 0.25s ease, color 0.25s ease; }
 
+/* ─── BASE :root — type scale, spacing, font (never changes) ─── */
 :root {
-  --bg:      #0d0d10;
-  --bg2:     #141417;
-  --bg3:     #1c1c21;
-  --line:    rgba(255,255,255,0.07);
-  --line2:   rgba(255,255,255,0.14);
-  --text:    #ede9e3;
-  --muted:   #6e6b67;
-  --muted2:  rgba(237,233,227,0.58);
-  --accent:  #c9aa82;
-  --accent2: #8bbdac;
-  --accent3: #a89bc4;
-  --tr: rgba(139,189,172,0.13);
-  --tu: rgba(201,170,130,0.13);
-  --ti: rgba(168,155,196,0.13);
-  --ts: rgba(140,160,200,0.13);
-
-  /* fluid type scale — clamp(min, preferred, max) */
+  /* fluid type scale */
   --text-xs:   clamp(9px,  1.8vw + 0.3rem, 11px);
   --text-sm:   clamp(11px, 2vw   + 0.3rem, 13px);
   --text-base: clamp(13px, 2.2vw + 0.3rem, 15px);
@@ -38,7 +24,6 @@ html { scroll-behavior: smooth; }
   --text-lg:   clamp(20px, 3.5vw + 0.5rem, 28px);
   --text-xl:   clamp(28px, 5vw   + 0.5rem, 48px);
   --text-2xl:  clamp(36px, 7vw   + 0.5rem, 60px);
-
   /* spacing scale */
   --sp-xs:  clamp(8px,  1.5vw, 12px);
   --sp-sm:  clamp(12px, 2vw,   20px);
@@ -56,10 +41,79 @@ html { scroll-behavior: smooth; }
   -webkit-font-smoothing: antialiased;
 }
 
+/* ─── DARK THEME (default) ─── */
+:root,
+:root[data-theme="dark"] {
+  --bg:           #0d0d10;
+  --bg2:          #141417;
+  --bg3:          #1c1c21;
+  --line:         rgba(255,255,255,0.07);
+  --line2:        rgba(255,255,255,0.15);
+  --text:         #ede9e3;
+  --muted:        #6e6b67;
+  --muted2:       rgba(237,233,227,0.58);
+  --accent:       #c9aa82;
+  --accent2:      #8bbdac;
+  --accent3:      #a89bc4;
+  --tr:           rgba(139,189,172,0.13);
+  --tu:           rgba(201,170,130,0.13);
+  --ti:           rgba(168,155,196,0.13);
+  --ts:           rgba(140,160,200,0.13);
+  --nav-bg:       rgba(13,13,16,0.88);
+  --genai-border: rgba(168,155,196,0.2);
+  --genai-bg:     rgba(168,155,196,0.1);
+}
+
+/* ─── LIGHT THEME ─── */
+:root[data-theme="light"] {
+  --bg:           #f7f5f0;
+  --bg2:          #ffffff;
+  --bg3:          #eeeae2;
+  --line:         rgba(0,0,0,0.08);
+  --line2:        rgba(0,0,0,0.16);
+  --text:         #1a1916;
+  --muted:        #8a8680;
+  --muted2:       rgba(26,25,22,0.62);
+  --accent:       #9a6f2e;
+  --accent2:      #2a7a64;
+  --accent3:      #6b5a9a;
+  --tr:           rgba(42,122,100,0.1);
+  --tu:           rgba(154,111,46,0.1);
+  --ti:           rgba(107,90,154,0.1);
+  --ts:           rgba(80,110,160,0.1);
+  --nav-bg:       rgba(247,245,240,0.92);
+  --genai-border: rgba(107,90,154,0.2);
+  --genai-bg:     rgba(107,90,154,0.07);
+}
+
+/* ─── OS PREFERENCE — auto, only if no data-theme set ─── */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg:           #f7f5f0;
+    --bg2:          #ffffff;
+    --bg3:          #eeeae2;
+    --line:         rgba(0,0,0,0.08);
+    --line2:        rgba(0,0,0,0.16);
+    --text:         #1a1916;
+    --muted:        #8a8680;
+    --muted2:       rgba(26,25,22,0.62);
+    --accent:       #9a6f2e;
+    --accent2:      #2a7a64;
+    --accent3:      #6b5a9a;
+    --tr:           rgba(42,122,100,0.1);
+    --tu:           rgba(154,111,46,0.1);
+    --ti:           rgba(107,90,154,0.1);
+    --ts:           rgba(80,110,160,0.1);
+    --nav-bg:       rgba(247,245,240,0.92);
+    --genai-border: rgba(107,90,154,0.2);
+    --genai-bg:     rgba(107,90,154,0.07);
+  }
+}
+
 /* ─── SKIP LINK (WCAG) ─── */
 .skip-link {
   position: absolute; top: -100%; left: 0;
-  background: var(--accent); color: #0d0d10;
+  background: var(--accent); color: var(--bg);
   padding: 8px 16px; font-size: var(--text-sm); font-weight: 600;
   z-index: 999; border-radius: 0 0 6px 0;
 }
@@ -71,11 +125,23 @@ html { scroll-behavior: smooth; }
 /* ─── NAV ─── */
 nav {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(13,13,16,0.88);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
+  transition: background 0.3s;
 }
+/* ─── THEME TOGGLE BUTTON ─── */
+.theme-toggle {
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 1px solid var(--line2);
+  background: transparent; color: var(--muted);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+  transition: border-color 0.2s, color 0.2s;
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .nav-inner {
   max-width: 900px; margin: 0 auto;
   padding: clamp(14px,2vw,20px) clamp(16px,4vw,40px);
@@ -135,11 +201,26 @@ section:first-of-type { border-top: none; }
   color: var(--muted2); margin-bottom: var(--sp-sm);
 }
 .hero-bio strong { color: var(--text); font-weight: 500; }
+.hero-tagline {
+  font-size: var(--text-sm); color: var(--muted); margin-top: var(--sp-sm);
+  font-style: italic; line-height: 1.5;
+}
 .dog-quote {
+  background: var(--bg3);
+  border: 1px solid var(--line2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: clamp(14px,2vw,18px) clamp(16px,2.5vw,20px);
+  margin: var(--sp-sm) 0;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.dog-quote-text {
   font-size: var(--text-md); font-style: italic; font-weight: 300;
-  color: var(--accent); border-left: 2px solid var(--accent);
-  padding: 4px 0 4px 18px; margin: var(--sp-sm) 0;
-  line-height: 1.55;
+  color: var(--text); line-height: 1.55; display: block;
+}
+.dog-quote-sig {
+  font-size: var(--text-sm); color: var(--accent);
+  font-style: normal; display: block; letter-spacing: 0.01em;
 }
 .hero-sectors { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--sp-sm); }
 .spill {
@@ -165,17 +246,21 @@ section:first-of-type { border-top: none; }
 /* ─── ABOUT ─── */
 .about-grid {
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 220px 1fr;
   gap: clamp(32px,5vw,56px);
 }
+/* avatar + heading inline */
+.about-left-top {
+  display: flex; align-items: center; gap: 16px; margin-bottom: var(--sp-sm);
+}
 .avatar-wrap {
-  width: clamp(60px,8vw,80px); height: clamp(60px,8vw,80px);
+  width: clamp(52px,7vw,72px); height: clamp(52px,7vw,72px);
   border-radius: 50%; background: var(--bg3);
   border: 1px solid var(--line2);
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: var(--sp-sm); overflow: hidden;
+  flex-shrink: 0; overflow: hidden;
 }
-.avatar-initials { font-size: clamp(18px,3vw,24px); font-weight: 600; color: var(--accent); }
+.avatar-initials { font-size: clamp(16px,2.5vw,22px); font-weight: 600; color: var(--accent); }
 .quick-facts { display: flex; flex-direction: column; gap: var(--sp-sm); margin-bottom: var(--sp-md); }
 .fact-label { font-size: var(--text-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
 .fact-value { font-size: var(--text-sm); color: var(--muted2); line-height: 1.5; }
@@ -186,7 +271,7 @@ section:first-of-type { border-top: none; }
 
 /* GenAI card */
 .genai-card {
-  background: var(--bg2); border: 1px solid rgba(168,155,196,0.2);
+  background: var(--bg2); border: 1px solid var(--genai-border);
   border-radius: 12px; padding: clamp(16px,2.5vw,22px); margin: var(--sp-sm) 0;
 }
 .genai-eyebrow {
@@ -202,7 +287,7 @@ section:first-of-type { border-top: none; }
 .gtag-row { display: flex; flex-wrap: wrap; gap: 5px; }
 .gtag {
   font-size: var(--text-xs); padding: 3px 8px; border-radius: 4px;
-  background: rgba(168,155,196,0.1); border: 1px solid rgba(168,155,196,0.2); color: var(--accent3);
+  background: var(--genai-bg); border: 1px solid var(--genai-border); color: var(--accent3);
 }
 
 /* Certs */
@@ -214,20 +299,24 @@ section:first-of-type { border-top: none; }
 }
 .cert-row {
   background: var(--bg2); display: flex; align-items: center;
-  gap: 0; padding: clamp(9px,1.5vw,12px) clamp(12px,2vw,16px);
+  gap: 0; padding: 9px clamp(12px,2vw,14px);
   transition: background 0.2s;
 }
 .cert-row:hover { background: var(--bg3); }
-.cert-dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 12px; flex-shrink: 0; }
+.cert-dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
 .cert-dot.ai { background: var(--accent3); }
 .cert-dot.ux { background: var(--accent); }
 .cert-dot.ds { background: var(--accent2); }
-.cert-name { font-size: var(--text-sm); color: var(--text); flex: 1; }
-.cert-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.cert-issuer { font-size: var(--text-xs); color: var(--muted); }
+.cert-name {
+  font-size: 11px; color: var(--text); flex: 1; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.4;
+}
+.cert-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: 6px; }
+.cert-issuer { font-size: 10px; color: var(--muted); white-space: nowrap; }
 .cert-date {
-  font-size: var(--text-xs); color: var(--muted);
-  border: 1px solid var(--line2); border-radius: 4px; padding: 2px 6px;
+  font-size: 9px; color: var(--muted);
+  border: 1px solid var(--line2); border-radius: 4px; padding: 1px 5px;
   white-space: nowrap;
 }
 .wcag-row .cert-name { color: var(--accent2); }
@@ -264,7 +353,7 @@ section:first-of-type { border-top: none; }
   height: 2px; background: linear-gradient(to right, var(--accent2), var(--accent3), var(--accent));
   border-radius: 2px; margin-bottom: 22px;
 }
-.assignments { display: flex; flex-direction: column; gap: 8px; min-width: 420px; }
+.assignments { display: flex; flex-direction: column; gap: 5px; min-width: 380px; }
 .arow { display: flex; align-items: center; gap: 10px; }
 .aname {
   font-size: var(--text-xs); color: var(--muted);
@@ -285,7 +374,7 @@ section:first-of-type { border-top: none; }
 .pu { background: var(--tu); border: 1px solid rgba(201,170,130,0.25); color: var(--accent); }
 .pi { background: var(--ti); border: 1px solid rgba(168,155,196,0.25); color: var(--accent3); }
 .ps { background: var(--ts); border: 1px solid rgba(140,160,200,0.25); color: #8ca4c8; }
-.ayear { font-size: var(--text-xs); color: var(--muted); min-width: 44px; }
+.ayear { display: none; }
 .spec-legend {
   display: flex; gap: clamp(12px,2vw,20px); margin-top: 18px;
   padding-top: 14px; border-top: 1px solid var(--line); flex-wrap: wrap;
@@ -336,8 +425,22 @@ section:first-of-type { border-top: none; }
 .cc-cta { font-size: var(--text-xs); letter-spacing: 0.08em; color: var(--accent); opacity: 0; transition: opacity 0.2s; white-space: nowrap; margin-left: 12px; }
 .cc:hover .cc-cta { opacity: 1; }
 
-/* ─── CONTACT ─── */
+/* ─── EMPLOYMENT ─── */
+.emp-list { display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-bottom: var(--sp-md); }
+.emp-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--bg2); padding: clamp(12px,2vw,16px) clamp(16px,2.5vw,22px); transition: background 0.2s; }
+.emp-row:hover { background: var(--bg3); }
+.edu-block .emp-row { border-radius: 0; }
+.edu-block { display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.emp-company { font-size: var(--text-base); font-weight: 600; letter-spacing: -0.01em; color: var(--text); margin-bottom: 2px; }
+.emp-role { font-size: var(--text-sm); color: var(--muted2); }
+.emp-year { font-size: var(--text-xs); letter-spacing: 0.08em; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
 #contact { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--sp-md); }
+.ziggy-footer {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: clamp(16px,3vw,28px) 0 clamp(20px,4vw,36px);
+  font-size: var(--text-xs); color: var(--muted); letter-spacing: 0.06em;
+}
+.ziggy-paw { font-size: 14px; }
 .contact-title { font-size: var(--text-xl); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 6px; }
 .contact-sub { font-size: var(--text-sm); color: var(--muted); }
 .btns { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -349,7 +452,7 @@ section:first-of-type { border-top: none; }
 }
 .btn-g { border: 1px solid var(--line2); color: var(--text); background: transparent; }
 .btn-g:hover, .btn-g:focus { border-color: var(--accent); color: var(--accent); outline: none; }
-.btn-s { background: var(--accent); color: #0d0d10; border: 1px solid transparent; font-weight: 600; }
+.btn-s { background: var(--accent); color: var(--bg); border: 1px solid transparent; font-weight: 600; }
 .btn-s:hover, .btn-s:focus { background: #d4b98c; outline: none; }
 .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
@@ -361,12 +464,22 @@ section:first-of-type { border-top: none; }
 /* Tablet: 768px and below */
 @media (max-width: 768px) {
   .hero-grid { grid-template-columns: 1fr; }
+  /* Single column: left col (avatar + facts + certs) above bio */
   .about-grid { grid-template-columns: 1fr; }
-  .about-left { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; }
-  .avatar-wrap { margin-bottom: 0; }
+  .about-left { order: 1; }
+  .about-right { order: 2; }
+  /* Full width — show issuer, restore meta */
+  .cert-meta { display: flex; }
+  .cert-date { display: block; }
+  .cert-name { font-size: 12px; }
   .cc-outcomes { flex-direction: column; margin-left: clamp(20px,3vw,28px); }
-  .cert-meta { display: none; }
   .spectrum-axis span:nth-child(2) { display: none; }
+}
+
+/* Desktop: hide cert meta in the narrow 220px sidebar */
+@media (min-width: 769px) {
+  .about-left .cert-meta { display: none; }
+  .about-left .cert-name { font-size: 11px; }
 }
 
 /* Mobile: 480px and below */
@@ -374,12 +487,15 @@ section:first-of-type { border-top: none; }
   .nav-links { gap: 12px; }
   .nav-links a { font-size: 9px; }
   .hero-stats { grid-template-columns: 1fr 1fr; }
-  .about-left { grid-template-columns: 1fr; }
   .cc-head { gap: 10px; }
   .cc-num { display: none; }
   #contact { flex-direction: column; align-items: flex-start; }
   .spectrum-axis { justify-content: flex-start; gap: 8px; }
   .aname { min-width: 90px; font-size: 9px; }
+  /* Re-show cert meta at small sizes, compact */
+  .cert-date { display: block; }
+  .cert-issuer { font-size: 9px; }
+  .cert-date { font-size: 9px; padding: 1px 5px; }
 }
 
 /* Reduced motion */
@@ -408,8 +524,12 @@ a:focus-visible, button:focus-visible {
       <a href="#about">About</a>
       <a href="#work">Work</a>
       <a href="#experience">Experience</a>
+      <a href="#employment">Employment</a>
       <a href="#contact">Contact</a>
     </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+      <span id="themeIcon">☀</span>
+    </button>
   </div>
 </nav>
 
@@ -421,12 +541,15 @@ a:focus-visible, button:focus-visible {
   <div class="hero-grid">
     <div class="hero-left">
       <div class="hero-eyebrow">Senior Product Designer · Stockholm</div>
-      <h1 class="hero-title">Design that<br>moves people<br><em>and products</em><br>forward.</h1>
+      <h1 class="hero-title">Where imagination<br>meets <em>intuitive</em><br>design.</h1>
     </div>
     <div class="hero-right">
-      <p class="hero-bio">10+ years designing across <strong>IoT, MedTech, banking, and public sector</strong>. I bring structure to ambiguity, run workshops that actually land, and ship work from first sketch to production-ready.</p>
-      <p class="hero-bio">I mentor designers, build teams, and believe the best design decisions come from <strong>curiosity, not assumptions</strong> — backed by research, tested with real users.</p>
-      <blockquote class="dog-quote">As a designer and mentor, my aim is to be the person your dog thinks you are.</blockquote>
+      <p class="hero-bio">I've spent 10+ years designing across <strong>IoT, MedTech, banking, and public sector</strong> — turning messy, complex problems into products people actually enjoy using.</p>
+      <p class="hero-bio">I run workshops, mentor designers, prototype fast, and care deeply about getting things right. Whether it's a proof of concept or a pixel-perfect launch — I'm in it from start to finish.</p>
+      <blockquote class="dog-quote">
+        <span class="dog-quote-text">As a designer and mentor, my aim is to be the person your dog thinks you are.</span>
+        <span class="dog-quote-sig">— Supportive, curious, and fun to be around.</span>
+      </blockquote>
       <div class="hero-sectors" aria-label="Sectors">
         <span class="spill">IoT &amp; Connected</span>
         <span class="spill">Banking &amp; Fintech</span>
@@ -447,30 +570,39 @@ a:focus-visible, button:focus-visible {
 <section id="about" aria-label="About me">
   <div class="about-grid">
     <div class="about-left">
-      <div class="avatar-wrap" aria-hidden="true">
-        <span class="avatar-initials">CT</span>
-      </div>
-      <div>
-        <p class="section-label">Who I am</p>
-        <h2 class="section-title">About me</h2>
-        <div class="quick-facts">
-          <div class="fact">
-            <div class="fact-label">Current role</div>
-            <div class="fact-value"><strong>Senior Product Designer</strong><br>QTE AB · Stockholm</div>
-          </div>
-          <div class="fact">
-            <div class="fact-label">Experience</div>
-            <div class="fact-value"><strong>10+ years</strong> · 20+ clients</div>
-          </div>
-          <div class="fact">
-            <div class="fact-label">Sectors</div>
-            <div class="fact-value">IoT · MedTech · Banking · Public</div>
-          </div>
-          <div class="fact">
-            <div class="fact-label">Certified</div>
-            <div class="fact-value"><strong>WCAG AA</strong></div>
-          </div>
+      <div class="about-left-top">
+        <div class="avatar-wrap" aria-hidden="true">
+          <span class="avatar-initials">CT</span>
         </div>
+        <div>
+          <p class="section-label">Who I am</p>
+          <h2 class="section-title">About me</h2>
+        </div>
+      </div>
+      <div class="quick-facts">
+        <div class="fact">
+          <div class="fact-label">Current role</div>
+          <div class="fact-value"><strong>Senior Product Designer</strong><br>QTE AB · Stockholm</div>
+        </div>
+        <div class="fact">
+          <div class="fact-label">Experience</div>
+          <div class="fact-value"><strong>10+ years</strong> · 20+ clients</div>
+        </div>
+        <div class="fact">
+          <div class="fact-label">Sectors</div>
+          <div class="fact-value">IoT · MedTech · Banking · Public</div>
+        </div>
+      </div>
+
+      <!-- Certs live in left col — visible on desktop sidebar, reordered on mobile -->
+      <div class="certs-heading">Certifications</div>
+      <div class="certs-grid" role="list">
+        <div class="cert-row" role="listitem"><div class="cert-dot ai"></div><div class="cert-name">GenAI for UX Designers</div><div class="cert-meta"><span class="cert-issuer">Coursera</span><span class="cert-date">Jan 2026</span></div></div>
+        <div class="cert-row" role="listitem"><div class="cert-dot ai"></div><div class="cert-name">AI Foundations &amp; Design Thinking</div><div class="cert-meta"><span class="cert-issuer">AI CERTs</span><span class="cert-date">Jan 2026</span></div></div>
+        <div class="cert-row" role="listitem"><div class="cert-dot ai"></div><div class="cert-name">Design Strategy &amp; AI Implementation</div><div class="cert-meta"><span class="cert-issuer">AI CERTs</span><span class="cert-date">Jan 2026</span></div></div>
+        <div class="cert-row" role="listitem"><div class="cert-dot ux"></div><div class="cert-name">Vibe Coding with Cursor AI</div><div class="cert-meta"><span class="cert-issuer">Scrimba</span><span class="cert-date">Jan 2026</span></div></div>
+        <div class="cert-row" role="listitem"><div class="cert-dot ds"></div><div class="cert-name">Sustainable Design Systems</div><div class="cert-meta"><span class="cert-issuer">Packt</span><span class="cert-date">Jan 2026</span></div></div>
+        <div class="cert-row wcag-row" role="listitem"><div class="cert-dot ds"></div><div class="cert-name">WCAG AA — Accessibility</div><div class="cert-meta"><span class="cert-issuer">Certified</span><span class="cert-date">Ongoing</span></div></div>
       </div>
     </div>
 
@@ -478,7 +610,10 @@ a:focus-visible, button:focus-visible {
       <p class="bio-p">I thrive at the intersection of <strong>creativity and strategy</strong> — championing design through learning, experimentation, and collaboration. From proof-of-concept explorations to pixel-perfect, launch-ready solutions, I combine big-picture thinking with meticulous execution.</p>
       <p class="bio-p">I lead design initiatives, drive workshops that deliver strategic insights, and mentor designers — fostering a team culture where curiosity is the default and experimentation is encouraged.</p>
       <p class="bio-p">I'm deeply invested in <strong>Generative AI for design</strong> — exploring vibe coding, AI-augmented research, and new ways to move faster from idea to testable thing.</p>
-      <blockquote class="dog-quote">As a designer and mentor, my aim is to be the person your dog thinks you are — supportive, curious, and fun to be around.</blockquote>
+      <blockquote class="dog-quote">
+        <span class="dog-quote-text">As a designer and mentor, my aim is to be the person your dog thinks you are — supportive, curious, and fun to be around.</span>
+        <span class="dog-quote-sig">— Cajsa-Tora</span>
+      </blockquote>
 
       <div class="genai-card">
         <div class="genai-eyebrow">Internal practice · Aug 2025 – Ongoing</div>
@@ -490,16 +625,6 @@ a:focus-visible, button:focus-visible {
       </div>
 
       <div class="divider"></div>
-
-      <div class="certs-heading">Certifications</div>
-      <div class="certs-grid" role="list">
-        <div class="cert-row" role="listitem"><div class="cert-dot ai"></div><div class="cert-name">GenAI for UX Designers</div><div class="cert-meta"><span class="cert-issuer">Coursera</span><span class="cert-date">Jan 2026</span></div></div>
-        <div class="cert-row" role="listitem"><div class="cert-dot ai"></div><div class="cert-name">AI Foundations &amp; Design Thinking</div><div class="cert-meta"><span class="cert-issuer">AI CERTs</span><span class="cert-date">Jan 2026</span></div></div>
-        <div class="cert-row" role="listitem"><div class="cert-dot ai"></div><div class="cert-name">Design Strategy, Future Trends &amp; Implementation with AI</div><div class="cert-meta"><span class="cert-issuer">AI CERTs</span><span class="cert-date">Jan 2026</span></div></div>
-        <div class="cert-row" role="listitem"><div class="cert-dot ux"></div><div class="cert-name">Vibe Coding with Cursor AI</div><div class="cert-meta"><span class="cert-issuer">Scrimba</span><span class="cert-date">Jan 2026</span></div></div>
-        <div class="cert-row" role="listitem"><div class="cert-dot ds"></div><div class="cert-name">Design That Scales: Sustainable Design Systems</div><div class="cert-meta"><span class="cert-issuer">Packt</span><span class="cert-date">Jan 2026</span></div></div>
-        <div class="cert-row wcag-row" role="listitem"><div class="cert-dot ds"></div><div class="cert-name">WCAG AA — Accessibility certification</div><div class="cert-meta"><span class="cert-issuer">Certified</span><span class="cert-date">Ongoing</span></div></div>
-      </div>
 
       <div class="craft-heading">Design crafts</div>
       <div class="craft-pills">
@@ -528,40 +653,207 @@ a:focus-visible, button:focus-visible {
 <section id="experience" aria-label="Past assignments">
   <p class="section-label">Consultant experience</p>
   <h2 class="section-title">Past assignments</h2>
-  <p class="spectrum-intro">Each bar shows where an engagement sat on the discipline spectrum — from pure research and strategy on the left, through UX design in the middle, to UI and delivery on the right.</p>
-  <div class="spectrum-wrap" role="img" aria-label="Assignment spectrum visualization">
-    <div class="spectrum-axis">
-      <span>← Research &amp; Strategy</span>
-      <span>UX Design</span>
-      <span>UI &amp; Delivery →</span>
-    </div>
-    <div class="spectrum-bar"></div>
-    <div class="assignments">
-      <div class="arow"><span class="aname">Smart Housing</span><div class="atrack"><div class="abg"></div><div class="apill pr" style="left:1%;width:24%">Research · Concept</div></div><span class="ayear">2018–19</span></div>
-      <div class="arow"><span class="aname">Forsmark</span><div class="atrack"><div class="abg"></div><div class="apill ps" style="left:3%;width:28%">Research · Strategy</div></div><span class="ayear">2018</span></div>
-      <div class="arow"><span class="aname">Skatteverket</span><div class="atrack"><div class="abg"></div><div class="apill pu" style="left:12%;width:54%">Research · UX · Scrum Master</div></div><span class="ayear">2020–21</span></div>
-      <div class="arow"><span class="aname">Arbetsförmedlingen</span><div class="atrack"><div class="abg"></div><div class="apill pu" style="left:18%;width:38%">UX · Service Design</div></div><span class="ayear">2019–20</span></div>
-      <div class="arow"><span class="aname">Försäkringskassan</span><div class="atrack"><div class="abg"></div><div class="apill pu" style="left:16%;width:36%">UX · Accessibility</div></div><span class="ayear">2020</span></div>
-      <div class="arow"><span class="aname">Heartrunner</span><div class="atrack"><div class="abg"></div><div class="apill pu" style="left:14%;width:54%">Service Design · UX/UI · App</div></div><span class="ayear">2021–22</span></div>
-      <div class="arow"><span class="aname">Astra Zeneca</span><div class="atrack"><div class="abg"></div><div class="apill pu" style="left:20%;width:50%">Design Lead · UX · MedTech</div></div><span class="ayear">2022</span></div>
-      <div class="arow"><span class="aname">PostNord</span><div class="atrack"><div class="abg"></div><div class="apill pu" style="left:24%;width:40%">UX · POC</div></div><span class="ayear">2020</span></div>
-      <div class="arow"><span class="aname">Nordic Light</span><div class="atrack"><div class="abg"></div><div class="apill pu" style="left:26%;width:44%">UX · IoT · Prototype</div></div><span class="ayear">2021</span></div>
-      <div class="arow"><span class="aname">Husqvarna</span><div class="atrack"><div class="abg"></div><div class="apill pu" style="left:22%;width:58%">UX/UI · IoT · Full cycle</div></div><span class="ayear">2017–19</span></div>
-      <div class="arow"><span class="aname">Electrolux</span><div class="atrack"><div class="abg"></div><div class="apill pu" style="left:18%;width:68%">UX/UI · IoT · Idea → Launch</div></div><span class="ayear">2022–24</span></div>
-      <div class="arow"><span class="aname">Handelsbanken</span><div class="atrack"><div class="abg"></div><div class="apill pi" style="left:44%;width:44%">UI · Banking · Design System</div></div><span class="ayear">2023–24</span></div>
-      <div class="arow"><span class="aname">SEB</span><div class="atrack"><div class="abg"></div><div class="apill pi" style="left:52%;width:36%">UI · Design System</div></div><span class="ayear">2024</span></div>
-      <div class="arow"><span class="aname">HSB · Securitas</span><div class="atrack"><div class="abg"></div><div class="apill pi" style="left:58%;width:34%">UI · Delivery</div></div><span class="ayear">2023</span></div>
-      <div class="arow"><span class="aname">Teliacompany.com</span><div class="atrack"><div class="abg"></div><div class="apill pi" style="left:56%;width:36%">UI · Web</div></div><span class="ayear">2023</span></div>
-      <div class="arow"><span class="aname">Skellefteå Airport</span><div class="atrack"><div class="abg"></div><div class="apill pi" style="left:54%;width:38%">UI · Web · Delivery</div></div><span class="ayear">2023</span></div>
-    </div>
-    <div class="spec-legend">
-      <div class="leg"><div class="ldot" style="background:var(--accent2)"></div>Research</div>
-      <div class="leg"><div class="ldot" style="background:#8ca4c8"></div>Strategy</div>
-      <div class="leg"><div class="ldot" style="background:var(--accent)"></div>UX Design</div>
-      <div class="leg"><div class="ldot" style="background:var(--accent3)"></div>UI &amp; Delivery</div>
-    </div>
-  </div>
+  <p class="spectrum-intro">A quick overview of clients and sectors across 13+ years. Click any block to see the role — click a sector to filter.</p>
+  <div id="tlRoot"></div>
 </section>
+
+<style>
+.tl-outer { border: 1px solid var(--line); border-radius: 16px; padding: clamp(16px,2.5vw,24px); background: var(--bg2); }
+.tl-sectors { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.tl-sl { display: flex; align-items: center; gap: 6px; font-size: var(--text-xs); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); cursor: pointer; transition: opacity 0.2s; user-select: none; }
+.tl-sl.dim { opacity: 0.28; }
+.tl-sldot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.tl-scroll { overflow-x: auto; padding-bottom: 4px; }
+.tl-scroll::-webkit-scrollbar { height: 3px; }
+.tl-scroll::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 2px; }
+.tl-canvas { position: relative; min-width: 560px; }
+.tl-yaxis { position: relative; height: 20px; margin-bottom: 4px; }
+.tl-ytick { position: absolute; font-size: var(--text-xs); color: var(--muted); transform: translateX(-50%); line-height: 1; }
+.tl-divider { height: 1px; background: var(--line); margin-bottom: 8px; }
+.tl-rows { display: flex; flex-direction: column; gap: 4px; }
+.tl-row { position: relative; height: 28px; }
+.tl-block {
+  position: absolute; height: 100%; border-radius: 5px;
+  display: flex; align-items: center; padding: 0 8px;
+  cursor: pointer; border: 1px solid transparent;
+  transition: filter 0.15s, opacity 0.2s;
+  overflow: hidden;
+}
+.tl-block:hover { filter: brightness(1.18); }
+.tl-block.dim { opacity: 0.15; }
+.tl-block.lit { filter: brightness(1.2); outline: 2px solid var(--line2); outline-offset: 1px; }
+.tl-block-label { font-size: 9.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; letter-spacing: 0.01em; }
+.tl-detail {
+  margin-top: 12px; padding: 14px 16px;
+  border: 1px solid var(--line2); border-radius: 10px;
+  background: var(--bg); display: none;
+  animation: tl-in 0.18s ease;
+}
+.tl-detail.show { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+@keyframes tl-in { from { opacity:0; transform:translateY(4px) } to { opacity:1; transform:none } }
+.tl-dname { font-size: var(--text-md); font-weight: 600; letter-spacing: -0.01em; color: var(--text); margin-bottom: 3px; }
+.tl-drole { font-size: var(--text-sm); color: var(--muted2); margin-bottom: 8px; }
+.tl-dbadge { display: inline-block; font-size: var(--text-xs); letter-spacing: 0.07em; text-transform: uppercase; padding: 3px 9px; border-radius: 10px; font-weight: 500; }
+.tl-dmeta { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.tl-dyear { font-size: var(--text-xs); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.tl-ddur { font-size: var(--text-sm); color: var(--muted2); }
+.tl-dclose { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 15px; line-height: 1; padding: 0; margin-top: 2px; }
+.tl-dclose:hover { color: var(--text); }
+.tl-hint { font-size: var(--text-xs); color: var(--muted); text-align: right; margin-top: 8px; }
+</style>
+
+<script>
+(function() {
+  const SECTORS = {
+    iot:      { label:'IoT & Connected',    bg:'#c9aa82', text:'#5a3e10' },
+    medtech:  { label:'MedTech',            bg:'#8bbdac', text:'#1a4a3a' },
+    banking:  { label:'Banking & Fintech',  bg:'#a89bc4', text:'#2e1a5a' },
+    public:   { label:'Public sector',      bg:'#e07b54', text:'#6b2010' },
+    strategy: { label:'Strategy & AI',      bg:'#7bafd9', text:'#0c3060' },
+    design:   { label:'Design & UX',        bg:'#888780', text:'#2c2c2a' },
+  };
+
+  function dy(y, m=1) { return y + (m-1)/12; }
+
+  const JOBS = [
+    { name:'Skellefteå Airport', role:'Conceptual Designer',       sector:'design',   start:dy(2012,6), end:dy(2012,9),  row:0 },
+    { name:'Nordic Lights',      role:'Interaction Designer',      sector:'iot',      start:dy(2012,6), end:dy(2012,9),  row:1 },
+    { name:'Smart Housing',      role:'UX Researcher',             sector:'iot',      start:dy(2015,1), end:dy(2015,8),  row:0 },
+    { name:'SEB',                role:'Digital Designer',          sector:'banking',  start:dy(2016,1), end:dy(2016,9),  row:0 },
+    { name:'Husqvarna Connect',  role:'UX/UI Designer',            sector:'iot',      start:dy(2017,1), end:dy(2019,1),  row:0 },
+    { name:'Securitas',          role:'UI Designer',               sector:'design',   start:dy(2019,3), end:dy(2019,5),  row:1 },
+    { name:'HSB',                role:'UI Designer',               sector:'design',   start:dy(2019,5), end:dy(2019,7),  row:1 },
+    { name:'PostNord',           role:'UX Designer & Researcher',  sector:'design',   start:dy(2019,6), end:dy(2019,9),  row:2 },
+    { name:'Telia Company',      role:'UX Designer',               sector:'design',   start:dy(2019,8), end:dy(2019,12), row:3 },
+    { name:'Försäkringskassan',  role:'UX Designer',               sector:'public',   start:dy(2019,8), end:dy(2019,12), row:2 },
+    { name:'Arbetsförmedlingen', role:'UX Designer',               sector:'public',   start:dy(2019,12),end:dy(2020,2),  row:1 },
+    { name:'Skatteverket',       role:'UX/UI & Scrum Master',      sector:'public',   start:dy(2020,1), end:dy(2020,10), row:0 },
+    { name:'AstraZeneca',        role:'UX Lead',                   sector:'medtech',  start:dy(2021,3), end:dy(2021,11), row:0 },
+    { name:'Forsmark',           role:'UX Designer',               sector:'design',   start:dy(2021,4), end:dy(2021,8),  row:1 },
+    { name:'Handelsbanken',      role:'UX/UI Designer',            sector:'banking',  start:dy(2021,12),end:dy(2022,2),  row:0 },
+    { name:'HeartRunner',        role:'Product Designer',          sector:'medtech',  start:dy(2023,2), end:dy(2023,10), row:0 },
+    { name:'Electrolux Group',   role:'Product Designer',          sector:'iot',      start:dy(2024,1), end:dy(2025,8),  row:0 },
+    { name:'QTE GenAI',          role:'Senior Product Designer',   sector:'strategy', start:dy(2025,8), end:dy(2026,4),  row:0 },
+  ];
+
+  const MIN = 2012, MAX = 2026.5, SPAN = MAX - MIN;
+  function pct(t) { return ((t-MIN)/SPAN*100).toFixed(3)+'%'; }
+  function pctW(s,e) { return (Math.max((e-s)/SPAN*100,0.6)).toFixed(3)+'%'; }
+  function durLabel(s,e) {
+    const mo = Math.round((e-s)*12);
+    if (mo<2) return '1 month';
+    if (mo<12) return mo+' months';
+    const y=Math.floor(mo/12), m=mo%12;
+    return y+'yr'+(m?' '+m+'mo':'');
+  }
+  function yearLabel(s,e) {
+    const ys=Math.floor(s), ye=Math.floor(e-0.01);
+    return ys===ye ? String(ys) : ys+'–'+ye;
+  }
+
+  const numRows = Math.max(...JOBS.map(j=>j.row))+1;
+  const root = document.getElementById('tlRoot');
+  root.innerHTML = `
+    <div class="tl-outer">
+      <div class="tl-sectors" id="tlSec"></div>
+      <div class="tl-scroll">
+        <div class="tl-canvas" id="tlCanvas">
+          <div class="tl-yaxis" id="tlAxis"></div>
+          <div class="tl-divider"></div>
+          <div class="tl-rows" id="tlRows"></div>
+        </div>
+      </div>
+      <div class="tl-detail" id="tlDetail">
+        <div>
+          <div class="tl-dname" id="tlDname"></div>
+          <div class="tl-drole" id="tlDrole"></div>
+          <span class="tl-dbadge" id="tlDbadge"></span>
+        </div>
+        <div class="tl-dmeta">
+          <div class="tl-dyear" id="tlDyear"></div>
+          <div class="tl-ddur" id="tlDdur"></div>
+          <button class="tl-dclose" id="tlClose">✕</button>
+        </div>
+      </div>
+      <div class="tl-hint">Click any block to explore · scroll to see full timeline</div>
+    </div>`;
+
+  // year axis
+  const axis = document.getElementById('tlAxis');
+  for (let y=2012; y<=2026; y+=2) {
+    const t = document.createElement('div');
+    t.className='tl-ytick'; t.style.left=pct(y); t.textContent=y;
+    axis.appendChild(t);
+  }
+
+  // rows
+  const rowsEl = document.getElementById('tlRows');
+  const rowEls = [];
+  for (let i=0; i<numRows; i++) {
+    const r = document.createElement('div'); r.className='tl-row';
+    rowsEl.appendChild(r); rowEls.push(r);
+  }
+
+  // legend
+  const secEl = document.getElementById('tlSec');
+  let activeSec = null;
+  const allBlocks = [];
+
+  Object.entries(SECTORS).forEach(([key, sc]) => {
+    const item = document.createElement('div');
+    item.className='tl-sl';
+    item.innerHTML=`<div class="tl-sldot" style="background:${sc.bg}"></div>${sc.label}`;
+    item.addEventListener('click', () => {
+      if (activeSec===key) {
+        activeSec=null;
+        allBlocks.forEach(b=>b.el.classList.remove('dim'));
+        document.querySelectorAll('.tl-sl').forEach(i=>i.classList.remove('dim'));
+      } else {
+        activeSec=key;
+        allBlocks.forEach(b=>b.el.classList.toggle('dim', b.sector!==key));
+        document.querySelectorAll('.tl-sl').forEach(i=>i.classList.toggle('dim', i!==item));
+      }
+    });
+    secEl.appendChild(item);
+  });
+
+  // blocks
+  let activeBlock = null;
+  document.getElementById('tlClose').addEventListener('click', closeDetail);
+
+  JOBS.forEach((j) => {
+    const sc = SECTORS[j.sector];
+    const el = document.createElement('div');
+    el.className='tl-block';
+    el.style.cssText=`left:${pct(j.start)};width:${pctW(j.start,j.end)};background:${sc.bg}20;border-color:${sc.bg}50;`;
+    const span = document.createElement('span');
+    span.className='tl-block-label'; span.style.color=sc.bg; span.textContent=j.name;
+    el.appendChild(span);
+
+    el.addEventListener('click', ()=>{
+      if (activeBlock===el) { closeDetail(); return; }
+      if (activeBlock) activeBlock.classList.remove('lit');
+      activeBlock=el; el.classList.add('lit');
+      document.getElementById('tlDname').textContent=j.name;
+      document.getElementById('tlDrole').textContent=j.role;
+      document.getElementById('tlDyear').textContent=yearLabel(j.start,j.end);
+      document.getElementById('tlDdur').textContent=durLabel(j.start,j.end);
+      const badge=document.getElementById('tlDbadge');
+      badge.textContent=sc.label;
+      badge.style.cssText=`background:${sc.bg}18;color:${sc.bg};border:1px solid ${sc.bg}40`;
+      document.getElementById('tlDetail').classList.add('show');
+    });
+
+    rowEls[j.row].appendChild(el);
+    allBlocks.push({ el, sector:j.sector });
+  });
+
+  function closeDetail() {
+    document.getElementById('tlDetail').classList.remove('show');
+    if (activeBlock) { activeBlock.classList.remove('lit'); activeBlock=null; }
+  }
+})();
+</script>
 
 <!-- ─── CASES ─── -->
 <section id="work" aria-label="Selected work">
@@ -711,22 +1003,101 @@ a:focus-visible, button:focus-visible {
   </div>
 </section>
 
-<!-- ─── CONTACT ─── -->
-<section id="contact" aria-label="Contact">
-  <div>
-    <h2 class="contact-title">Let's talk.</h2>
-    <p class="contact-sub">Open to senior roles and select consulting engagements.</p>
+<!-- ─── EMPLOYMENT ─── -->
+<section id="employment" aria-label="Employment history">
+  <p class="section-label">Employment</p>
+  <h2 class="section-title">Where I've worked</h2>
+  <div class="emp-list">
+
+    <div class="emp-row">
+      <div class="emp-main">
+        <div class="emp-company">QVIK AB</div>
+        <div class="emp-role">Senior Product Designer</div>
+      </div>
+      <div class="emp-year">2021 – Current</div>
+    </div>
+
+    <div class="emp-row">
+      <div class="emp-main">
+        <div class="emp-company">Idean (Capgemini)</div>
+        <div class="emp-role">Senior UX Designer</div>
+      </div>
+      <div class="emp-year">2019 – 2021</div>
+    </div>
+
+    <div class="emp-row">
+      <div class="emp-main">
+        <div class="emp-company">Sogeti AB</div>
+        <div class="emp-role">UX/UI Designer</div>
+      </div>
+      <div class="emp-year">2016 – 2019</div>
+    </div>
+
+    <div class="emp-row">
+      <div class="emp-main">
+        <div class="emp-company">Academic Work</div>
+        <div class="emp-role">Digital Designer</div>
+      </div>
+      <div class="emp-year">2016</div>
+    </div>
+
+    <div class="emp-row">
+      <div class="emp-main">
+        <div class="emp-company">Jönköping University</div>
+        <div class="emp-role">Lecturer — Graphic Design &amp; Interaction Design</div>
+      </div>
+      <div class="emp-year">2014</div>
+    </div>
+
+    <div class="emp-row">
+      <div class="emp-main">
+        <div class="emp-company">Design Västerbotten</div>
+        <div class="emp-role">Interaction Designer</div>
+      </div>
+      <div class="emp-year">2012</div>
+    </div>
+
   </div>
-  <div class="btns">
-    <a class="btn btn-g" href="https://www.linkedin.com/in/cajsa-tora-hermansson-a489a421/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-    <a class="btn btn-s" href="mailto:cajsatora@example.com">Get in touch →</a>
+
+  <div class="edu-block">
+    <p class="section-label" style="margin-top:var(--sp-md)">Education</p>
+    <div class="emp-row">
+      <div class="emp-main">
+        <div class="emp-company">Umeå University</div>
+        <div class="emp-role">M.Sc. Informatics — Cross Media Interaction Design</div>
+      </div>
+      <div class="emp-year">2011 – 2013</div>
+    </div>
+    <div class="emp-row">
+      <div class="emp-main">
+        <div class="emp-company">Umeå University</div>
+        <div class="emp-role">B.Sc. Informatics — Digital Media Production</div>
+      </div>
+      <div class="emp-year">2008 – 2011</div>
+    </div>
   </div>
 </section>
 
+<!-- ─── CONTACT ─── -->
+<section id="contact" aria-label="Contact">
+  <div>
+    <h2 class="contact-title">Let's work together.</h2>
+    <p class="contact-sub">Open to senior roles and select consulting engagements. I respond within a day — Ziggy permitting.</p>
+  </div>
+  <div class="btns">
+    <a class="btn btn-g" href="https://www.linkedin.com/in/cajsa-tora-hermansson-a489a421/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <a class="btn btn-g" href="cajsatora_cv.pdf" download="Cajsa-Tora-Hermansson-CV.pdf">Download CV ↓</a>
+    <a class="btn btn-s" href="mailto:cajsatora@example.com">Get in touch →</a>
+  </div>
+</section>
+<div class="ziggy-footer">
+  <span>Made with curiosity &amp; care</span>
+  <span class="ziggy-paw" title="Ziggy approved">🐾</span>
+  <span>Ziggy approved</span>
+</div>
+
 </div>
 </main>
-</body>
-</html>
 
 <!-- ═══════════════════════════════════════════
      SLIDE-IN CASE PANEL
@@ -748,8 +1119,8 @@ a:focus-visible, button:focus-visible {
   position: fixed; top: 0; right: 0; bottom: 0;
   width: min(680px, 100vw);
   z-index: 201;
-  background: #0d0d10;
-  border-left: 1px solid rgba(255,255,255,0.09);
+  background: var(--bg);
+  border-left: 1px solid var(--line2);
   transform: translateX(100%);
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex; flex-direction: column;
@@ -762,7 +1133,7 @@ a:focus-visible, button:focus-visible {
   display: flex; align-items: flex-start; justify-content: space-between;
   gap: 16px;
   padding: clamp(20px,3vw,32px) clamp(20px,3vw,32px) clamp(16px,2.5vw,24px);
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid var(--line);
   flex-shrink: 0;
 }
 .panel-header-meta { flex: 1; min-width: 0; }
@@ -781,7 +1152,7 @@ a:focus-visible, button:focus-visible {
 .panel-role strong { color: var(--muted2); font-weight: 400; }
 .panel-close {
   width: 36px; height: 36px; border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--line2);
   background: transparent; color: var(--muted);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; flex-shrink: 0; font-size: 18px; line-height: 1;
@@ -794,7 +1165,7 @@ a:focus-visible, button:focus-visible {
 .panel-tags-row {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   padding: 12px clamp(20px,3vw,32px);
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid var(--line);
   flex-shrink: 0;
 }
 .panel-tag {
@@ -808,7 +1179,7 @@ a:focus-visible, button:focus-visible {
 }
 .panel-body::-webkit-scrollbar { width: 4px; }
 .panel-body::-webkit-scrollbar-track { background: transparent; }
-.panel-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 2px; }
 
 /* ─── PANEL SECTIONS ─── */
 .ps-block { margin-bottom: clamp(28px,4vw,40px); }
@@ -817,7 +1188,7 @@ a:focus-visible, button:focus-visible {
   color: var(--muted); margin-bottom: 8px;
   display: flex; align-items: center; gap: 8px;
 }
-.ps-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
+.ps-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
 .ps-heading {
   font-size: clamp(16px,2.5vw,20px); font-weight: 600;
   letter-spacing: -0.02em; color: var(--text); margin-bottom: 12px;
@@ -835,11 +1206,11 @@ a:focus-visible, button:focus-visible {
 /* ─── OUTCOME CHIPS ─── */
 .panel-outcomes {
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: 1px; background: rgba(255,255,255,0.07);
+  gap: 1px; background: var(--line);
   border-radius: 10px; overflow: hidden; margin-top: 16px;
 }
 .po {
-  background: #1c1c21; padding: clamp(12px,2vw,16px);
+  background: var(--bg3); padding: clamp(12px,2vw,16px);
 }
 .po-label {
   font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
@@ -849,8 +1220,8 @@ a:focus-visible, button:focus-visible {
 
 /* ─── LEARNINGS ─── */
 .ps-learning {
-  background: rgba(201,170,130,0.06);
-  border: 1px solid rgba(201,170,130,0.15);
+  background: var(--tu);
+  border: 1px solid var(--line2);
   border-radius: 10px; padding: clamp(14px,2vw,18px);
   font-size: clamp(13px,2vw,14px); line-height: 1.75;
   color: var(--muted2); font-style: italic;
@@ -861,13 +1232,97 @@ a:focus-visible, button:focus-visible {
 .panel-tools { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 12px; }
 .ptool {
   font-size: 10px; padding: 2px 8px; border-radius: 4px;
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: var(--muted);
+  background: var(--bg3); border: 1px solid var(--line); color: var(--muted);
 }
 
-/* ─── PANEL FOOTER ─── */
+/* ─── CASE VISUALS — cover + ticker ─── */
+.cv-cover {
+  width: 100%; aspect-ratio: 16/7; border-radius: 10px;
+  overflow: hidden; margin-bottom: 20px; position: relative;
+  background: var(--bg3); border: 1px solid var(--line);
+}
+.cv-cover img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.cv-cover-placeholder {
+  width: 100%; height: 100%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px;
+  color: var(--muted); font-size: var(--text-sm);
+}
+.cv-cover-placeholder svg { opacity: 0.3; }
+
+.cv-ticker-wrap { margin-bottom: 28px; }
+.cv-ticker-label {
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.cv-ticker-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+.cv-ticker {
+  position: relative; overflow: hidden;
+  border-radius: 8px; background: var(--bg3);
+  border: 1px solid var(--line);
+}
+.cv-track {
+  display: flex; transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.cv-slide {
+  flex-shrink: 0; width: 100%;
+  aspect-ratio: 16/9; position: relative;
+  background: var(--bg3); overflow: hidden;
+}
+.cv-slide img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.cv-slide-placeholder {
+  width: 100%; height: 100%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px;
+  color: var(--muted);
+}
+.cv-slide-placeholder .ph-tag {
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 10px;
+  background: var(--bg2); border: 1px solid var(--line2);
+  color: var(--muted); margin-top: 4px;
+}
+.cv-slide-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 8px 12px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.55));
+  font-size: 10px; color: rgba(255,255,255,0.7);
+  letter-spacing: 0.04em;
+}
+
+.cv-controls {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px 6px;
+}
+.cv-dots { display: flex; gap: 5px; }
+.cv-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--line2); cursor: pointer;
+  transition: background 0.2s, transform 0.2s; border: none; padding: 0;
+}
+.cv-dot.active { background: var(--accent); transform: scale(1.25); }
+.cv-arrows { display: flex; gap: 4px; }
+.cv-arrow {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1px solid var(--line2); background: transparent;
+  color: var(--muted); cursor: pointer; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.cv-arrow:hover { border-color: var(--accent); color: var(--accent); }
+.cv-arrow:disabled { opacity: 0.25; cursor: not-allowed; }
+
+.cv-placeholder-hint {
+  font-size: 10px; color: var(--muted); text-align: center;
+  padding: 6px 0 2px; letter-spacing: 0.04em; font-style: italic;
+}
 .panel-footer {
   padding: clamp(14px,2vw,20px) clamp(20px,3vw,32px);
-  border-top: 1px solid rgba(255,255,255,0.07);
+  border-top: 1px solid var(--line);
   display: flex; justify-content: space-between; align-items: center;
   flex-shrink: 0; gap: 12px;
 }
@@ -875,7 +1330,7 @@ a:focus-visible, button:focus-visible {
 .panel-nav-btn {
   font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
   padding: 8px 14px; border-radius: 6px; cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.1); background: transparent;
+  border: 1px solid var(--line2); background: transparent;
   color: var(--muted); transition: all 0.2s;
 }
 .panel-nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
@@ -922,6 +1377,14 @@ const CASES = [
     tags: [
       {label:"Research",cls:"pr"},{label:"UX",cls:"pu"},{label:"UI",cls:"pi"},
       {label:"Accessibility",cls:"ps"},{label:"IoT",cls:"pr"}
+    ],
+
+    cover: { src: null, alt: "Electrolux light picker — final UI" },
+    slides: [
+      { src: null, caption: "Usability study — Kista lab", tag: "Research" },
+      { src: null, caption: "Guerrilla testing — dot voting session", tag: "Process" },
+      { src: null, caption: "Light picker A/B variants", tag: "Design" },
+      { src: null, caption: "Final UI — WCAG AA compliant", tag: "Final UI" }
     ],
     sections: [
       {
@@ -970,6 +1433,14 @@ const CASES = [
     tags: [
       {label:"Service Design",cls:"pr"},{label:"UX",cls:"pu"},{label:"App",cls:"pi"},{label:"Accessibility",cls:"ps"}
     ],
+
+    cover: { src: null, alt: "HeartRunner CPR app — final design" },
+    slides: [
+      { src: null, caption: "Service Blueprint workshop", tag: "Process" },
+      { src: null, caption: "Scope Canvas session with team", tag: "Research" },
+      { src: null, caption: "Map-first alarm flow — wireframes", tag: "Design" },
+      { src: null, caption: "Final app screens — iOS", tag: "Final UI" }
+    ],
     sections: [
       {
         label: "Problem",
@@ -1015,6 +1486,14 @@ const CASES = [
     role: "UX/UI Designer · <strong>Global team · Jönköping · Mumbai · Stockholm · 2+ years</strong>",
     tags: [
       {label:"UX",cls:"pu"},{label:"UI",cls:"pi"},{label:"IoT",cls:"pr"},{label:"Full cycle",cls:"ps"}
+    ],
+
+    cover: { src: null, alt: "Husqvarna Connect app — final screens" },
+    slides: [
+      { src: null, caption: "First MVP usability test", tag: "Research" },
+      { src: null, caption: "Dual track sprint planning", tag: "Process" },
+      { src: null, caption: "Rapid prototyping session — Jönköping", tag: "Design" },
+      { src: null, caption: "Final app screens — device pairing", tag: "Final UI" }
     ],
     sections: [
       {
@@ -1063,6 +1542,14 @@ const CASES = [
     tags: [
       {label:"UX",cls:"pu"},{label:"UI",cls:"pi"},{label:"Banking",cls:"ps"},{label:"Workshops",cls:"ps"}
     ],
+
+    cover: { src: null, alt: "Handelsbanken savings goal service" },
+    slides: [
+      { src: null, caption: "PI Innovation workshop — Crazy 8s", tag: "Workshop" },
+      { src: null, caption: "Competitive analysis overview", tag: "Research" },
+      { src: null, caption: "Savings graph redesign session", tag: "Design" },
+      { src: null, caption: "Financial overview — final UI", tag: "Final UI" }
+    ],
     sections: [
       {
         label: "Problem",
@@ -1109,6 +1596,14 @@ const CASES = [
     role: "UX/UI Designer · Scrum Master · <strong>Digitala samarbeten · SAFe · Remote (COVID-19)</strong>",
     tags: [
       {label:"Research",cls:"pr"},{label:"UX",cls:"pu"},{label:"Public sector",cls:"ps"},{label:"Scrum Master",cls:"ps"}
+    ],
+
+    cover: { src: null, alt: "Skatteverket Digitala samarbeten" },
+    slides: [
+      { src: null, caption: "Stakeholder interviews — API users", tag: "Research" },
+      { src: null, caption: "Collaborative sketching session", tag: "Process" },
+      { src: null, caption: "Wireframe prototype — navigation", tag: "Design" },
+      { src: null, caption: "Final portal design", tag: "Final UI" }
     ],
     sections: [
       {
@@ -1157,6 +1652,14 @@ const CASES = [
     tags: [
       {label:"Research",cls:"pr"},{label:"UX",cls:"pu"},{label:"MedTech",cls:"ps"},
       {label:"CE regulated",cls:"ps"},{label:"App",cls:"pi"}
+    ],
+
+    cover: { src: null, alt: "AstraZeneca Turbo+ inhaler app" },
+    slides: [
+      { src: null, caption: "London usability lab — A/B test setup", tag: "Research" },
+      { src: null, caption: "Dose counter edge case mapping", tag: "Process" },
+      { src: null, caption: "ZeroTouch research findings", tag: "Design" },
+      { src: null, caption: "Final app screens — dose counter", tag: "Final UI" }
     ],
     sections: [
       {
@@ -1216,7 +1719,58 @@ function renderPanel(idx) {
 
   // Body
   const body = document.getElementById('pBody');
-  body.innerHTML = c.sections.map(s => {
+
+  // ── VISUALS: cover + ticker ──
+  let visualsHtml = '';
+
+  // Cover image
+  if (c.cover) {
+    if (c.cover.src) {
+      visualsHtml += `<div class="cv-cover"><img src="${c.cover.src}" alt="${c.cover.alt}" loading="lazy"></div>`;
+    } else {
+      visualsHtml += `<div class="cv-cover">
+        <div class="cv-cover-placeholder">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>${c.cover.alt}</span>
+        </div>
+      </div>`;
+    }
+  }
+
+  // Ticker
+  if (c.slides && c.slides.length) {
+    const uid = 'tk' + idx;
+    visualsHtml += `<div class="cv-ticker-wrap">
+      <div class="cv-ticker-label">Process &amp; visuals</div>
+      <div class="cv-ticker" id="${uid}">
+        <div class="cv-track" id="${uid}track">
+          ${c.slides.map((s, si) => {
+            const inner = s.src
+              ? `<img src="${s.src}" alt="${s.caption}" loading="lazy">${s.caption ? `<div class="cv-slide-caption">${s.caption}</div>` : ''}`
+              : `<div class="cv-slide-placeholder">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                  <span class="ph-tag">${s.tag}</span>
+                  <span style="font-size:10px;color:var(--muted);margin-top:2px">${s.caption}</span>
+                </div>`;
+            return `<div class="cv-slide">${inner}</div>`;
+          }).join('')}
+        </div>
+        <div class="cv-controls">
+          <div class="cv-dots" id="${uid}dots">
+            ${c.slides.map((_, si) => `<button class="cv-dot${si===0?' active':''}" data-idx="${si}" aria-label="Slide ${si+1}"></button>`).join('')}
+          </div>
+          <div class="cv-arrows">
+            <button class="cv-arrow" id="${uid}prev" aria-label="Previous slide" disabled>‹</button>
+            <button class="cv-arrow" id="${uid}next" aria-label="Next slide">›</button>
+          </div>
+        </div>
+      </div>
+      <p class="cv-placeholder-hint">Drop your images in — replace <code>src: null</code> with your image paths</p>
+    </div>`;
+  }
+
+  // ── CASE SECTIONS ──
+  const sectionsHtml = c.sections.map(s => {
     let html = `<div class="ps-block">
       <div class="ps-label">${s.label}</div>`;
     if (s.heading) html += `<div class="ps-heading">${s.heading}</div>`;
@@ -1235,6 +1789,38 @@ function renderPanel(idx) {
     html += `</div>`;
     return html;
   }).join('');
+
+  body.innerHTML = visualsHtml + sectionsHtml;
+
+  // ── WIRE UP TICKERS ──
+  if (c.slides && c.slides.length) {
+    const uid = 'tk' + idx;
+    const track = document.getElementById(uid + 'track');
+    const dots = document.querySelectorAll(`#${uid}dots .cv-dot`);
+    const prevBtn = document.getElementById(uid + 'prev');
+    const nextBtn = document.getElementById(uid + 'next');
+    let current = 0;
+
+    function goTo(n) {
+      current = Math.max(0, Math.min(n, c.slides.length - 1));
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === c.slides.length - 1;
+    }
+
+    dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    // Swipe support
+    let touchStartX = 0;
+    track.parentElement.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    track.parentElement.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
+    }, { passive: true });
+  }
 
   // Nav buttons
   document.getElementById('prevCase').disabled = idx === 0;
@@ -1284,4 +1870,41 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' && currentCase < CASES.length - 1) { currentCase++; renderPanel(currentCase); }
   if (e.key === 'ArrowLeft' && currentCase > 0) { currentCase--; renderPanel(currentCase); }
 });
+
+// ─── THEME TOGGLE ───
+(function() {
+  const root = document.documentElement;
+  const btn  = document.getElementById('themeToggle');
+  const icon = document.getElementById('themeIcon');
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    icon.textContent = theme === 'dark' ? '☀' : '☽';
+    try { localStorage.setItem('ct-theme', theme); } catch(e) {}
+  }
+
+  // 1. Stored manual preference wins
+  let stored = null;
+  try { stored = localStorage.getItem('ct-theme'); } catch(e) {}
+
+  // 2. Fall back to OS preference
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = stored || (prefersDark ? 'dark' : 'light');
+  applyTheme(initial);
+
+  // 3. Toggle on click
+  btn.addEventListener('click', function() {
+    const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  });
+
+  // 4. React to OS changes only if no manual override stored
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+    let saved = null;
+    try { saved = localStorage.getItem('ct-theme'); } catch(err) {}
+    if (!saved) applyTheme(e.matches ? 'dark' : 'light');
+  });
+})();
 </script>
+</body>
+</html>
