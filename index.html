@@ -162,6 +162,39 @@ nav {
 .nav-links a:hover, .nav-links a:focus { color: var(--text); outline: none; }
 .nav-links a:focus-visible { outline: 2px solid var(--accent); border-radius: 2px; }
 
+/* ─── HAMBURGER ─── */
+.hamburger {
+  display: none; width: 34px; height: 34px; border-radius: 8px;
+  border: 1px solid var(--line2); background: transparent; color: var(--muted);
+  cursor: pointer; align-items: center; justify-content: center; font-size: 18px;
+  flex-shrink: 0; transition: border-color 0.2s, color 0.2s;
+}
+.hamburger:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── MOBILE OVERLAY ─── */
+.mobile-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: var(--bg); flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+}
+.mobile-overlay.active { display: flex; }
+.mobile-overlay a {
+  font-size: var(--text-lg); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text); text-decoration: none; transition: color 0.2s;
+}
+.mobile-overlay a:hover { color: var(--accent); }
+.mobile-overlay-close {
+  position: absolute; top: clamp(14px,2vw,20px); right: clamp(16px,4vw,40px);
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 1px solid var(--line2); background: transparent; color: var(--muted);
+  cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;
+}
+.mobile-overlay-close:hover { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+}
+
 /* ─── SECTIONS ─── */
 section { padding: var(--sp-2xl) 0; border-top: 1px solid var(--line); }
 section:first-of-type { border-top: none; }
@@ -484,8 +517,6 @@ section:first-of-type { border-top: none; }
 
 /* Mobile: 480px and below */
 @media (max-width: 480px) {
-  .nav-links { gap: 12px; }
-  .nav-links a { font-size: 9px; }
   .hero-stats { grid-template-columns: 1fr 1fr; }
   .cc-head { gap: 10px; }
   .cc-num { display: none; }
@@ -527,11 +558,21 @@ a:focus-visible, button:focus-visible {
       <a href="#employment">Employment</a>
       <a href="#contact">Contact</a>
     </div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">☰</button>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">
       <span id="themeIcon">☀</span>
     </button>
   </div>
 </nav>
+
+<div class="mobile-overlay" id="mobileOverlay">
+  <button class="mobile-overlay-close" id="mobileOverlayClose" aria-label="Close menu">✕</button>
+  <a href="#about" class="mobile-nav-link">About</a>
+  <a href="#work" class="mobile-nav-link">Work</a>
+  <a href="#experience" class="mobile-nav-link">Experience</a>
+  <a href="#employment" class="mobile-nav-link">Employment</a>
+  <a href="#contact" class="mobile-nav-link">Contact</a>
+</div>
 
 <main id="main">
 <div class="wrap">
@@ -1924,6 +1965,23 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' && currentCase < CASES.length - 1) { currentCase++; renderPanel(currentCase); }
   if (e.key === 'ArrowLeft' && currentCase > 0) { currentCase--; renderPanel(currentCase); }
 });
+
+// ─── MOBILE NAV ───
+(function() {
+  const hamburger = document.getElementById('hamburgerBtn');
+  const overlay = document.getElementById('mobileOverlay');
+  const closeBtn = document.getElementById('mobileOverlayClose');
+  const links = overlay.querySelectorAll('.mobile-nav-link');
+
+  hamburger.addEventListener('click', function() { overlay.classList.add('active'); });
+  closeBtn.addEventListener('click', function() { overlay.classList.remove('active'); });
+  links.forEach(function(link) {
+    link.addEventListener('click', function() { overlay.classList.remove('active'); });
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) overlay.classList.remove('active');
+  });
+})();
 
 // ─── THEME TOGGLE ───
 (function() {
