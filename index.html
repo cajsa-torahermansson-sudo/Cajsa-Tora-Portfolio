@@ -1380,12 +1380,14 @@ const CASES = [
       {label:"Accessibility",cls:"ps"},{label:"IoT",cls:"pr"}
     ],
 
-    cover: { src: null, alt: "Electrolux light picker — final UI" },
+    cover: { src: "Images/Electrolux/elux-light-picker-improvement.png", alt: "Electrolux light picker — final UI" },
     slides: [
-      { src: null, caption: "Usability study — Kista lab", tag: "Research" },
-      { src: null, caption: "Guerrilla testing — dot voting session", tag: "Process" },
-      { src: null, caption: "Light picker A/B variants", tag: "Design" },
-      { src: null, caption: "Final UI — WCAG AA compliant", tag: "Final UI" }
+      { src: "Images/Electrolux/elux-notes.png", caption: "Usability study — Kista lab", tag: "Research" },
+      { src: "Images/Electrolux/elux-exploration.png", caption: "Guerrilla testing — dot voting session", tag: "Process" },
+      { src: "Images/Electrolux/elux-light-picker.png", caption: "Light picker A/B variants", tag: "Design" },
+      { src: "Images/Electrolux/elux-iteration-1.png", caption: "Final UI — WCAG AA compliant", tag: "Final UI" },
+      { src: "Images/Electrolux/elux-poc-light.mp4", caption: "Light picker — POC", tag: "POC", video: true },
+      { src: "Images/Electrolux/elux-poc-hood.mp4", caption: "Hood — POC", tag: "POC", video: true }
     ],
     sections: [
       {
@@ -1747,7 +1749,9 @@ function renderPanel(idx) {
         <div class="cv-track" id="${uid}track">
           ${c.slides.map((s, si) => {
             const inner = s.src
-              ? `<img src="${s.src}" alt="${s.caption}" loading="lazy">${s.caption ? `<div class="cv-slide-caption">${s.caption}</div>` : ''}`
+              ? (s.video
+                ? `<video src="${s.src}" muted playsinline controls style="width:100%;border-radius:6px"></video>${s.caption ? `<div class="cv-slide-caption">${s.caption}</div>` : ''}`
+                : `<img src="${s.src}" alt="${s.caption}" loading="lazy">${s.caption ? `<div class="cv-slide-caption">${s.caption}</div>` : ''}`)
               : `<div class="cv-slide-placeholder">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
                   <span class="ph-tag">${s.tag}</span>
