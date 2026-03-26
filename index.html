@@ -545,6 +545,11 @@ a:focus-visible, button:focus-visible {
 </head>
 <body>
 
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" aria-label="Close">&times;</button>
+  <div class="lightbox-media"></div>
+</div>
+
 <a class="skip-link" href="#main">Skip to main content</a>
 
 <!-- NAV -->
@@ -1381,6 +1386,29 @@ a:focus-visible, button:focus-visible {
   .case-panel { width: 100vw; border-left: none; }
   .panel-outcomes { grid-template-columns: 1fr; }
 }
+
+/* ─── LIGHTBOX ─── */
+.lightbox {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.92);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.lightbox.active { opacity: 1; pointer-events: auto; }
+.lightbox img, .lightbox video {
+  max-width: 92vw; max-height: 90vh;
+  border-radius: 8px;
+  object-fit: contain;
+}
+.lightbox-close {
+  position: absolute; top: 16px; right: 20px;
+  background: none; border: none; color: #fff;
+  font-size: 32px; cursor: pointer; opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.lightbox-close:hover { opacity: 1; }
+.cv-slide img { cursor: zoom-in; }
 </style>
 
 <!-- OVERLAY -->
@@ -1847,7 +1875,7 @@ function renderPanel(idx) {
             ${c.slides.map((_, si) => `<button class="cv-dot${si===0?' active':''}" data-idx="${si}" aria-label="Slide ${si+1}"></button>`).join('')}
           </div>
           <div class="cv-arrows">
-            <button class="cv-arrow" id="${uid}prev" aria-label="Previous slide" disabled>‹</button>
+            <button class="cv-arrow" id="${uid}prev" aria-label="Previous slide">‹</button>
             <button class="cv-arrow" id="${uid}next" aria-label="Next slide">›</button>
           </div>
         </div>
@@ -1889,11 +1917,11 @@ function renderPanel(idx) {
     let current = 0;
 
     function goTo(n) {
-      current = Math.max(0, Math.min(n, c.slides.length - 1));
+      current = ((n % c.slides.length) + c.slides.length) % c.slides.length;
       track.style.transform = `translateX(-${current * 100}%)`;
       dots.forEach((d, i) => d.classList.toggle('active', i === current));
-      prevBtn.disabled = current === 0;
-      nextBtn.disabled = current === c.slides.length - 1;
+      prevBtn.disabled = false;
+      nextBtn.disabled = false;
     }
 
     dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
@@ -1907,6 +1935,20 @@ function renderPanel(idx) {
       const diff = touchStartX - e.changedTouches[0].screenX;
       if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
     }, { passive: true });
+
+    // Lightbox — click slide image to view fullscreen
+    track.querySelectorAll('.cv-slide img').forEach(img => {
+      img.addEventListener('click', () => {
+        const lb = document.getElementById('lightbox');
+        lb.querySelector('.lightbox-media').innerHTML = `<img src="${img.src}" alt="${img.alt || ''}">`;
+        lb.classList.add('active');
+      });
+    });
+    track.querySelectorAll('.cv-slide video').forEach(vid => {
+      vid.addEventListener('click', e => {
+        if (e.target.closest('.cv-slide video').controls) return;
+      });
+    });
   }
 
   // Nav buttons
@@ -2008,6 +2050,15 @@ document.addEventListener('keydown', e => {
     try { saved = localStorage.getItem('ct-theme'); } catch(err) {}
     if (!saved) applyTheme(e.matches ? 'dark' : 'light');
   });
+})();
+
+// ── LIGHTBOX CLOSE ──
+(function() {
+  const lb = document.getElementById('lightbox');
+  function closeLb() { lb.classList.remove('active'); lb.querySelector('.lightbox-media').innerHTML = ''; }
+  lb.querySelector('.lightbox-close').addEventListener('click', closeLb);
+  lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('active')) closeLb(); });
 })();
 </script>
 </body>
