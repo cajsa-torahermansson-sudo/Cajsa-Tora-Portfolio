@@ -1412,7 +1412,7 @@ a:focus-visible, button:focus-visible {
   transition: opacity 0.15s;
 }
 .lightbox-close:hover { opacity: 1; }
-.cv-slide img { cursor: zoom-in; }
+.cv-slide img, .cv-cover img { cursor: zoom-in; }
 </style>
 
 <!-- OVERLAY -->
@@ -1955,6 +1955,15 @@ function renderPanel(idx) {
       });
     });
   }
+
+  // Lightbox — click cover image to view fullscreen
+  body.querySelectorAll('.cv-cover img').forEach(img => {
+    img.addEventListener('click', () => {
+      const lb = document.getElementById('lightbox');
+      lb.querySelector('.lightbox-media').innerHTML = `<img src="${img.src}" alt="${img.alt || ''}">`;
+      lb.classList.add('active');
+    });
+  });
 
   // Nav buttons
   document.getElementById('prevCase').disabled = idx === 0;
