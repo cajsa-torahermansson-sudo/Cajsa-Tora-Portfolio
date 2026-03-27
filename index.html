@@ -216,6 +216,9 @@ section:first-of-type { border-top: none; }
   gap: clamp(16px,3vw,28px);
   margin-bottom: var(--sp-sm);
 }
+.hero-heading-block {
+  padding: clamp(48px,8vw,96px) 0 clamp(32px,5vw,56px);
+}
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -233,6 +236,7 @@ section:first-of-type { border-top: none; }
 .hero-title {
   font-size: var(--text-2xl); font-weight: 700;
   letter-spacing: -0.03em; line-height: 1.05;
+  margin-bottom: 0;
 }
 .hero-title em { font-style: italic; font-weight: 400; color: var(--accent); }
 .hero-bio {
@@ -591,8 +595,10 @@ a:focus-visible, button:focus-visible {
 
 <!-- ─── HERO ─── -->
 <section id="hero" aria-label="Introduction">
-  <div class="hero-eyebrow">Senior Product Designer · Stockholm</div>
-  <h1 class="hero-title">Where imagination<br>meets <em>intuitive</em><br>design.</h1>
+  <div class="hero-heading-block">
+    <div class="hero-eyebrow">Senior Product Designer · Stockholm</div>
+    <h1 class="hero-title">Where imagination<br>meets <em>intuitive</em><br>design.</h1>
+  </div>
 
   <div class="hero-grid">
     <div class="hero-left">
