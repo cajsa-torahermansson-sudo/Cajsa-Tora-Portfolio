@@ -220,7 +220,15 @@ section:first-of-type { border-top: none; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(32px,5vw,56px);
-  align-items: start;
+  align-items: stretch;
+}
+.hero-right {
+  display: flex;
+  flex-direction: column;
+}
+.hero-right .dog-quote {
+  margin-bottom: 0;
+  margin-top: auto;
 }
 .hero-eyebrow {
   font-size: var(--text-xs); letter-spacing: 0.14em;
